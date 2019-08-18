@@ -1,9 +1,11 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-int leftListen = 7;
+int leftListen = 6;
 int rightListen = 10;
-SoftwareSerial left (5, 6);
+int leftAttention = 7;
+int rightAttention = 11;
+SoftwareSerial left (4, 5);
 SoftwareSerial right (8, 9);
 String RI;
 String LI;
@@ -13,6 +15,8 @@ String userIn;
 void setup() {
 	pinMode(leftListen, INPUT);
 	pinMode(rightListen, INPUT);
+	pinMode(leftAttention, OUTPUT);
+	pinMode(rightAttention, OUTPUT);
 	Serial.begin(9600);
 	while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
@@ -27,8 +31,14 @@ void loop() {
 		userIn = Serial.readString();
 		Serial.print("Serial ");
 		Serial.println(userIn);
+		digitalWrite(leftAttention, HIGH);
+		delay(10);
 		left.print(userIn);
+		digitalWrite(leftAttention, LOW);
+		digitalWrite(rightAttention, HIGH);
+		delay(10);
 		right.print(userIn);
+		digitalWrite(rightAttention, LOW);
 	}
 	if(digitalRead(leftListen)) {
 		left.listen();
