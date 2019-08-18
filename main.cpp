@@ -25,20 +25,27 @@ void setup() {
 	right.begin(9600);
 }
 
+void sendLeft(String message) {
+	digitalWrite(leftAttention, HIGH);
+	delay(10);
+	left.print(message);
+	digitalWrite(leftAttention, LOW);
+}
+
+void sendRight(String message) {
+	digitalWrite(rightAttention, HIGH);
+	delay(10);
+	right.print(message);
+	digitalWrite(rightAttention, LOW);
+}
 
 void loop() {
 	if (Serial.available() > 0) {
 		userIn = Serial.readString();
 		Serial.print("Serial ");
 		Serial.println(userIn);
-		digitalWrite(leftAttention, HIGH);
-		delay(10);
-		left.print(userIn);
-		digitalWrite(leftAttention, LOW);
-		digitalWrite(rightAttention, HIGH);
-		delay(10);
-		right.print(userIn);
-		digitalWrite(rightAttention, LOW);
+		sendLeft(userIn);
+		sendRight(userIn);
 	}
 	if(digitalRead(leftListen)) {
 		left.listen();
@@ -46,6 +53,7 @@ void loop() {
 			LI = left.readString();
 			Serial.print("LI ");
 			Serial.println(LI);
+			sendRight(LI);
 		}
 	}
 	if(digitalRead(rightListen)) {
@@ -54,6 +62,7 @@ void loop() {
 			RI = right.readString();
 			Serial.print("RI ");
 			Serial.println(RI);
+			sendLeft(RI);
 		}
 	}
 }
